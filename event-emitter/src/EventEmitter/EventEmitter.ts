@@ -1,5 +1,8 @@
 type Listeners<TEvents> = {
-  [K in keyof TEvents]?: Array<(payload: TEvents[K]) => void>;
+  [K in keyof TEvents]?: {
+    handler: (payload: TEvents[K]) => void
+    once: boolean
+  }[]
 };
 
 class EventEmitter<TEvents> {
@@ -10,7 +13,7 @@ class EventEmitter<TEvents> {
       this.events[event] = []
     }
 
-    this.events[event].push(payload)
+    this.events[event].push({ handler: payload, once: false })
   }
 
   once<K extends keyof TEvents>(event: K, payload: (payloadEvent: TEvents[K]) => void): void {
@@ -18,26 +21,30 @@ class EventEmitter<TEvents> {
       this.events[event] = []
     }
 
-    this.events[event] = [payload]
+    this.events[event].push({ handler: payload, once: true });
   }
 
   off<K extends keyof TEvents>(event: K, payload: (payloadEvent: TEvents[K]) => void): void {
-    const listeners = this.events[event]
+    this.events[event] = this.events[event]?.filter(listener => listener.handler !== payload)
 
-    if (listeners?.includes(payload)) {
-      const indexToRemove = listeners?.indexOf(payload)
-      if (indexToRemove !== -1) {
-        listeners?.splice(indexToRemove, 1);
-      }
-    }
   }
 
   emit<K extends keyof TEvents>(event: K, payload: TEvents[K]): void {
-    const listeners = this.events[event]
+    const listeners = [...(this.events[event] ?? [])]
 
-    listeners?.forEach(fn => {
-      fn(payload)
-    });
+    for (const fn of listeners) {
+      fn.handler(payload)
+
+      if (fn.once) {
+        const listenerIdx = this.events[event]?.findIndex(
+          listener => listener === fn
+        ) ?? -1
+
+        if (listenerIdx !== -1) {
+          this.events[event]?.splice(listenerIdx, 1)
+        }
+      }
+    }
   }
 }
 

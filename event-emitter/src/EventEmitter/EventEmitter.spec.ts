@@ -105,7 +105,7 @@ test('should emit just multiple times for multiple registrations of the same han
   expect(mockHandler).toHaveBeenCalledWith({ orderId: '123' })
 })
 
-test('should emit just once for multiple registrations of the same handler', () => {
+test('should emit twice for multiple registrations of the same handler', () => {
   const emitter = new EventEmitter<Events>();
 
   const mockHandler = vi.fn()
@@ -115,7 +115,7 @@ test('should emit just once for multiple registrations of the same handler', () 
 
   emitter.emit('order.created', { orderId: '123' })
 
-  expect(mockHandler).toHaveBeenCalledOnce()
+  expect(mockHandler).toHaveBeenCalledTimes(2)
   expect(mockHandler).toHaveBeenCalledWith({ orderId: '123' })
 })
 
@@ -126,10 +126,85 @@ test('should emit just once for multiple registrations of the same handler (last
 
   emitter.once("order.created", mockHandler);
   emitter.on("order.created", mockHandler);
+
+  emitter.emit('order.created', { orderId: '123' })
+
+  expect(mockHandler).toHaveBeenCalledTimes(2)
+  expect(mockHandler).toHaveBeenCalledWith({ orderId: '123' })
+})
+
+test('should emit just once for multiple emits and one handler', () => {
+  const emitter = new EventEmitter<Events>();
+
+  const mockHandler = vi.fn()
+
   emitter.once("order.created", mockHandler);
 
+  emitter.emit('order.created', { orderId: '123' })
   emitter.emit('order.created', { orderId: '123' })
 
   expect(mockHandler).toHaveBeenCalledOnce()
   expect(mockHandler).toHaveBeenCalledWith({ orderId: '123' })
+})
+
+test('should emit just once for multiple handlers and one emit', () => {
+  const emitter = new EventEmitter<Events>();
+
+  const mockHandlerA = vi.fn()
+  const mockHandlerB = vi.fn()
+  const mockHandlerC = vi.fn()
+
+  emitter.on("order.created", mockHandlerA);
+  emitter.once("order.created", mockHandlerB);
+  emitter.on("order.created", mockHandlerC);
+
+  emitter.emit('order.created', { orderId: '123' })
+
+  expect(mockHandlerA).toHaveBeenCalledOnce()
+  expect(mockHandlerA).toHaveBeenCalledWith({ orderId: '123' })
+  expect(mockHandlerB).toHaveBeenCalledOnce()
+  expect(mockHandlerB).toHaveBeenCalledWith({ orderId: '123' })
+  expect(mockHandlerC).toHaveBeenCalledOnce()
+  expect(mockHandlerC).toHaveBeenCalledWith({ orderId: '123' })
+})
+
+test('should emit just once for multiple handlers and one emit', () => {
+  const emitter = new EventEmitter<Events>();
+
+  const mockHandlerA = vi.fn()
+  const mockHandlerB = vi.fn()
+
+  emitter.once("order.created", mockHandlerA);
+  emitter.once("order.created", mockHandlerB);
+
+  emitter.emit('order.created', { orderId: '123' })
+
+  expect(mockHandlerA).toHaveBeenCalledOnce()
+  expect(mockHandlerA).toHaveBeenCalledWith({ orderId: '123' })
+  expect(mockHandlerB).toHaveBeenCalledOnce()
+  expect(mockHandlerB).toHaveBeenCalledWith({ orderId: '123' })
+})
+
+test('should emit the correct payload for different events', () => {
+  const emitter = new EventEmitter<Events>();
+
+  const createdHandler = vi.fn()
+  const completedHandler = vi.fn()
+
+  emitter.on("order.created", createdHandler)
+  emitter.on("order.completed", completedHandler)
+
+  const completedAt = new Date()
+
+  emitter.emit("order.created", { orderId: "123" })
+  emitter.emit("order.completed", {
+    orderId: "456",
+    completedAt
+  })
+
+  expect(createdHandler).toHaveBeenCalledWith({ orderId: "123" })
+  expect(completedHandler).toHaveBeenCalledWith({
+    orderId: "456",
+    completedAt
+  })
 })
