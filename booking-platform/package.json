@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "vitest",
-    "start": "node --watch src/server.ts --env-file=.env"
+    "start": "node --env-file=.env --watch src/server.ts"
   },
   "keywords": [],
   "author": "",

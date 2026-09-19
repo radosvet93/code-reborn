@@ -13,6 +13,17 @@ describe("GET /health", () => {
   });
 });
 
+describe("POST /health", () => {
+  it("should return status ok", async () => {
+    const res = await request(app)
+      .post("/health")
+      .expect("Content-Type", /json/)
+      .expect(404);
+
+    expect(res.body).toStrictEqual({ message: 'Error' });
+  });
+});
+
 describe("GET /any-route", () => {
   it("should return message Error and a 404", async () => {
     const res = await request(app)
@@ -20,6 +31,6 @@ describe("GET /any-route", () => {
       .expect("Content-Type", /json/)
       .expect(404);
 
-    expect(res.body).toStrictEqual({ status: 'Error' });
+    expect(res.body).toStrictEqual({ message: 'Error' });
   });
 });

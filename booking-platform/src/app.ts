@@ -10,13 +10,12 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
-app.use(errorHandler)
-
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
 app.all(/.*/, (req: Request, res: Response) => {
-  res.status(404).json({ status: 'Error' });
+  res.status(404).json({ message: 'Error' });
 });
 
+app.use(errorHandler)
