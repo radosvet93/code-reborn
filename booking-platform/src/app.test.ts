@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import request from "supertest";
-import { app } from './index.ts'
+import { app } from './app.ts'
 
 describe("GET /health", () => {
   it("should return status ok", async () => {
@@ -10,5 +10,16 @@ describe("GET /health", () => {
       .expect(200);
 
     expect(res.body).toStrictEqual({ status: 'ok' });
+  });
+});
+
+describe("GET /any-route", () => {
+  it("should return message Error and a 404", async () => {
+    const res = await request(app)
+      .get("/any-route")
+      .expect("Content-Type", /json/)
+      .expect(404);
+
+    expect(res.body).toStrictEqual({ status: 'Error' });
   });
 });
