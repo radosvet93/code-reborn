@@ -5,9 +5,10 @@
   "scripts": {
     "test": "vitest",
     "start": "node --env-file=.env --watch src/server.ts",
-    "test:run": "vitest run",
+    "test:run": "node scripts/migrate-test.mjs && vitest run",
     "typecheck": "tsc --noEmit",
-    "migrate": "node --env-file=.env ./node_modules/node-pg-migrate/bin/node-pg-migrate.js"
+    "migrate": "node --env-file=.env ./node_modules/node-pg-migrate/bin/node-pg-migrate.js",
+    "migrate:test": "node scripts/migrate-test.mjs"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.6.1",
+    "@types/pg": "^8.23.1",
     "@types/supertest": "^7.2.1",
     "node-pg-migrate": "^9.0.0",
     "supertest": "^7.2.2",
