@@ -1,5 +1,5 @@
 /** A range of local wall clock times on the day being asked about. */
-export type Interval = { start: string; end: string };
+export type Interval = { start: Date; end: Date };
 
 export type FreeTimeSlotsParams = {
   /** Zone the provider works in, e.g. "Europe/Sofia". */
@@ -49,8 +49,8 @@ export const freeTimeSlots = ({
 
   // A block and a booking mean the same thing here: this range is taken.
   const taken = [...blocks, ...bookings].map((interval) => ({
-    start: at(interval.start).epochMilliseconds,
-    end: at(interval.end).epochMilliseconds,
+    start: interval.start.getTime(),
+    end: interval.end.getTime(),
   }));
 
   const nowMs = now.getTime();

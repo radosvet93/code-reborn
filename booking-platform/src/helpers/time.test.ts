@@ -46,30 +46,27 @@ describe('freeTimeSlots', () => {
   });
 
   it('drops slots covered by a block', () => {
-    // Block runs 09:00-11:00 London local, so the first survivor is 11:00
-    // local (10:00Z), which starts the instant the block ends.
     const london = iso(freeTimeSlots({
       ...sofiaMonday,
       timezone: 'Europe/London',
-      blocks: [{ start: '09:00', end: '11:00' }],
+      blocks: [{ start: new Date('2026-09-21T09:00:00.000Z'), end: new Date('2026-09-21T11:00:00.000Z') }],
     }));
 
-    expect(london).toHaveLength(9);
-    expect(london[0]).toBe('2026-09-21T10:00:00.000Z');
+    expect(london).toHaveLength(7);
+    expect(london[0]).toBe('2026-09-21T11:00:00.000Z');
     expect(london.at(-1)).toBe('2026-09-21T14:00:00.000Z');
   });
 
   it('drops slots that collide with an existing booking', () => {
-    // Spec section 8: an existing 10:00-12:00 booking rejects 11:30-12:30
-    // but allows 12:00-14:00.
     const slots = iso(freeTimeSlots({
       ...sofiaMonday,
-      bookings: [{ start: '10:00', end: '12:00' }],
+      bookings: [{ start: new Date('2026-09-21T10:00:00.000Z'), end: new Date('2026-09-21T12:00:00.000Z') }],
     }));
 
-    expect(slots).toHaveLength(7);
-    expect(slots[0]).toBe('2026-09-21T09:00:00.000Z');  // 12:00 Sofia
-    expect(slots).not.toContain('2026-09-21T08:30:00.000Z'); // 11:30 Sofia
+    expect(slots).toHaveLength(6);
+    expect(slots[0]).toBe('2026-09-21T06:00:00.000Z');       // 09:00 Sofia, untouched
+    expect(slots).not.toContain('2026-09-21T08:30:00.000Z'); // 11:30-13:30 local, overlaps
+    expect(slots.at(-1)).toBe('2026-09-21T12:00:00.000Z');   // 15:00 Sofia, booking just ended
   });
 
   it('ignores the system timezone', () => {
