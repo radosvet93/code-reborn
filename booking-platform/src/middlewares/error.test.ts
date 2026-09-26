@@ -52,6 +52,29 @@ describe('errorHandler', () => {
     expect(res.body).toStrictEqual({ message: 'That time was just booked' });
   });
 
+  it('passes through the details of a client error', async () => {
+    const res = await request(appThatFailsWith(() => {
+      throw new HttpError(400, 'Invalid request', [{ path: 'query.date', message: 'nope' }]);
+    }))
+      .get('/boom')
+      .expect(400);
+
+    expect(res.body).toStrictEqual({
+      message: 'Invalid request',
+      details: [{ path: 'query.date', message: 'nope' }],
+    });
+  });
+
+  it('never sends the details of a server fault', async () => {
+    const res = await request(appThatFailsWith(() => {
+      throw new HttpError(503, 'primary down', { host: '10.0.0.4' });
+    }))
+      .get('/boom')
+      .expect(503);
+
+    expect(res.body).toStrictEqual({ message: 'Internal Server Error' });
+  });
+
   it('leaves a response that has already been sent alone', async () => {
     const res = await request(appThatFailsWith((req, res) => {
       res.status(200).json({ partial: true });

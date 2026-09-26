@@ -8,7 +8,8 @@
     "test:run": "node scripts/migrate-test.mjs && vitest run",
     "typecheck": "tsc --noEmit",
     "migrate": "node --env-file=.env ./node_modules/node-pg-migrate/bin/node-pg-migrate.js",
-    "migrate:test": "node scripts/migrate-test.mjs"
+    "migrate:test": "node scripts/migrate-test.mjs",
+    "seed": "node scripts/seed.mjs"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +26,8 @@
     "express": "^5.2.1",
     "morgan": "^1.12.1",
     "pg": "^8.23.0",
-    "pg-promise": "^12.7.1"
+    "pg-promise": "^12.7.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
