@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import errorHandler from './middlewares/error.ts';
 import { HttpError } from './errors.ts';
 import { providersRouter } from './router/providersRouter.ts';
+import { bookingsRouter } from './router/bookingsRouter.ts';
 
 export const app: Express = express();
 
@@ -10,7 +11,10 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 }
 
+app.use(express.json());
+
 app.use('/providers', providersRouter);
+app.use('/bookings', bookingsRouter);
 
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });

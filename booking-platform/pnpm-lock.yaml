@@ -207,6 +207,9 @@ importers:
 
   .:
     dependencies:
+      body-parser:
+        specifier: ^2.3.0
+        version: 2.3.0
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -223,6 +226,9 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
     devDependencies:
+      '@types/body-parser':
+        specifier: ^1.19.6
+        version: 1.19.6
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
