@@ -9,4 +9,4 @@ This is a learning project. I write the code.
 - YAGNI
 
 Spec: requirements.md
-Stack: Node + TS (native type stripping), Express 5, Postgres via pg-promise, raw SQL, Vitest + supertest, HTMX later
+Stack: Node + TS (native type stripping), Express 5, Postgres via pg-promise, raw SQL, Vitest + supertest

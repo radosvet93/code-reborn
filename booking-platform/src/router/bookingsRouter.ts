@@ -3,11 +3,11 @@ import { z } from 'zod';
 import { validate } from '../helpers/validate.ts';
 import { freeTimeSlots } from '../helpers/time.ts';
 import { HttpError } from '../errors.ts';
-import { findById } from '../db/providers.ts';
-import { findBookable } from '../db/services.ts';
-import { findForWeekday } from '../db/availability-rules.ts';
-import * as blockedPeriods from '../db/blocked-periods.ts';
-import * as bookings from '../db/bookings.ts';
+import { findById } from '../models/providers.ts';
+import { findBookable } from '../models/services.ts';
+import { findForWeekday } from '../models/availability-rules.ts';
+import * as blockedPeriods from '../models/blocked-periods.ts';
+import * as bookings from '../models/bookings.ts';
 
 export const bookingsRouter = Router();
 

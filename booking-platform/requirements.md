@@ -15,7 +15,7 @@ The point of this project is learning backend, not frontend or frameworks.
 - Node.js + TypeScript
 - Express (v5) for HTTP
 - PostgreSQL
-- HTMX + server-rendered HTML for the UI
+- Svelte for the UI
 - No React, no Next.js
 - No ORM (no Prisma, Drizzle, TypeORM, Sequelize). Raw SQL only
 - Hand-written SQL migrations
